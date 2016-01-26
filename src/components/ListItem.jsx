@@ -1,18 +1,23 @@
-// start here b/c it's the smallest components
-
 var React = require('react');
-// not css. this is an object.
+
+// class that can be reused OOP
+// just defining it, not using
+// ListItem is what we will call it
+// this object has a render function!
+// render is what is actually shown on the screen.
+// all we have to do is DEFINE our class like below.
+// AND return the actual JSX (html w/ javascript)!
+// this.props.text  - TEXT IS THE KEY
+// we are assuming that TEXT will be created as we build our way up!
+
 var ListItem = React.createClass({
   render: function () {
     return (
       <li>
-        <h4>{this.props.ingredient}</h4>
+        <h4>{this.props.text}</h4>
       </li>
     );
   }
-});
+})
 
 module.exports = ListItem;
-
-// this.props =
-// props are passed down to this component to called ingredient. Things are passed down from the top to the bottom!

@@ -19025,26 +19025,32 @@ module.exports = validateDOMNesting;
 module.exports = require('./lib/React');
 
 },{"./lib/React":53}],159:[function(require,module,exports){
-// Capital letters means the file is a components
-
 var React = require('react');
-// have to put extension cuz it's jsx
 var ListItem = require('./ListItem.jsx');
 
-var ingredients = [{ 'id': 1, 'text': 'ham' }, { 'id': 2, "text": "cheese" }];
+// COMPONENTS NEEDED
+// 1) List item
+// 2) List
+// 3) List Manager
+// every list needs to have UNIQUE IDENTIFIERS
+// key={index + text} text = {text} THESE are the properties from this.props. (text)
+// things trickle down so ListItem.jsx gets its text from THIS COMPONENT!
+// properties pass down when you do them like so!!! - pass it into the the component when you create the component itself!!
 
+// this.props.items hasn't been created yet!! we need to pass it in from the component above - List Manager
 var List = React.createClass({
   displayName: 'List',
 
   render: function () {
-    var listItems = ingredients.map(function (item) {
-      return React.createElement(ListItem, { key: item.id, ingredient: item.text });
-    });
+
+    var createItem = function (text, index) {
+      return React.createElement(ListItem, { key: index + text, text: text });
+    };
 
     return React.createElement(
       'ul',
       null,
-      listItems
+      this.props.items.map(createItem)
     );
   }
 });
@@ -19052,10 +19058,18 @@ var List = React.createClass({
 module.exports = List;
 
 },{"./ListItem.jsx":160,"react":158}],160:[function(require,module,exports){
-// start here b/c it's the smallest components
-
 var React = require('react');
-// not css. this is an object.
+
+// class that can be reused OOP
+// just defining it, not using
+// ListItem is what we will call it
+// this object has a render function!
+// render is what is actually shown on the screen.
+// all we have to do is DEFINE our class like below.
+// AND return the actual JSX (html w/ javascript)!
+// this.props.text  - TEXT IS THE KEY
+// we are assuming that TEXT will be created as we build our way up!
+
 var ListItem = React.createClass({
   displayName: 'ListItem',
 
@@ -19066,7 +19080,7 @@ var ListItem = React.createClass({
       React.createElement(
         'h4',
         null,
-        this.props.ingredient
+        this.props.text
       )
     );
   }
@@ -19074,18 +19088,78 @@ var ListItem = React.createClass({
 
 module.exports = ListItem;
 
-// this.props =
-// props are passed down to this component to called ingredient. Things are passed down from the top to the bottom!
-
 },{"react":158}],161:[function(require,module,exports){
+var React = require('react');
+var List = require('./List.jsx');
+
+// need to receive user input thus the getInitialState...
+// every component will call getInitialState once when the component is instantiated
+// handleSubmit is our creation. it is for dealing with the interaction.
+// components have props and state
+// this.props should ALWAYS BE READ ONLY - you only EVER pass data DOWN as properties
+// this.state is when you have DATA that can CHANGE!!! mutated data
+// React knows what THIS is referring to so you don't have to do var self = this type shit ever!
+
+var ListManager = React.createClass({
+  displayName: 'ListManager',
+
+  getInitialState: function () {
+    return { items: [], newItemText: '' };
+  },
+
+  onChange: function (element) {
+    this.setState({
+      newItemText: element.target.value
+    });
+  },
+
+  handleSubmit: function (element) {
+    element.preventDefault();
+    // grab the items in existing state
+    var currentItems = this.state.items;
+    // push new data into currentItems
+    currentItems.push(this.state.newItemText);
+    //set the state back to blank
+    //setState is a function of a class. Call thsi whenever you want to change the state of your app - takes an object with properties
+    // need to EXPLICITY set your state and THEN update your items
+    this.setState({ items: currentItems, newItemText: '' });
+  },
+
+  render: function () {
+    return React.createElement(
+      'div',
+      null,
+      React.createElement(
+        'h3',
+        null,
+        this.props.title
+      ),
+      React.createElement(
+        'form',
+        { onSubmit: this.handleSubmit },
+        React.createElement('input', { onChange: this.onChange, value: this.state.newItemText }),
+        React.createElement(
+          'button',
+          null,
+          'Add'
+        )
+      ),
+      React.createElement(List, { items: this.state.items })
+    );
+  }
+});
+
+module.exports = ListManager;
+
+},{"./List.jsx":159,"react":158}],162:[function(require,module,exports){
 // two components
 // 1) list item
 // 2) list
 
 var React = require('react');
 var ReactDOM = require('react-dom');
-var List = require('./components/List.jsx');
+var ListManager = require('./components/ListManager.jsx');
 
-ReactDOM.render(React.createElement(List, null), document.getElementById('ingredients'));
+ReactDOM.render(React.createElement(ListManager, { title: 'Ingredients' }), document.getElementById('ingredients'));
 
-},{"./components/List.jsx":159,"react":158,"react-dom":29}]},{},[161]);
+},{"./components/ListManager.jsx":161,"react":158,"react-dom":29}]},{},[162]);
