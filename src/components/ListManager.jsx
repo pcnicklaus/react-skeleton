@@ -22,11 +22,16 @@ var ListManager = React.createClass({
   },
 
   handleSubmit: function (element) {
+    // stop the button from getting clicks since we are using the form onSubmit
     element.preventDefault();
+
     // grab the items in existing state
     var currentItems = this.state.items;
-    // push new data into currentItems
+
+    // add/push new item into currentItems
     currentItems.push(this.state.newItemText);
+
+    //update the main item list with the new list and clear the nextItemText
     //set the state back to blank
     //setState is a function of a class. Call thsi whenever you want to change the state of your app - takes an object with properties
     // need to EXPLICITY set your state and THEN update your items
@@ -34,14 +39,40 @@ var ListManager = React.createClass({
   },
 
   render: function () {
+    // onChange is called with every keystroke so we can store the most recent data entered
+    // value is what the user sees in the input box - we point this to newItemText so it updates on every
+    // className lets set class names - cant use class b/c of createClass.
+
+    // can define styles in code!!!
+      var divStyle = {
+         marginTop: 10
+      }
+
+      var headingStyle = {
+      }
+
+      if (this.props.headingColor) {
+         headingStyle.background = this.props.headingColor;
+      }
+
     return (
-      <div>
-        <h3>{this.props.title}</h3>
-        <form onSubmit={this.handleSubmit}>
-          <input onChange={this.onChange} value={this.state.newItemText} />
-          <button>Add</button>
-        </form>
-        <List items={this.state.items} />
+      <div style={divStyle} className="col-sm-4">
+         <div className="panel panel-primary">
+                <div style={headingStyle} className="panel-heading">
+                           <h3>{this.props.title}</h3>
+                        </div>
+                <div className="row panel-body">
+                     <form onSubmit={this.handleSubmit}>
+                           <div className="col-sm-9">
+                                 <input className="form-control" onChange={this.onChange} value={this.state.newItemText} />
+                           </div>
+                           <div className="col-sm-2">
+                                 <button className="btn btn-primary">Add</button>
+                           </div>
+                     </form>
+                 </div>
+                 <List items={this.state.items} />
+         </div>
       </div>
     );
   }
